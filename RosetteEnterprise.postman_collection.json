@@ -1,0 +1,4492 @@
+{
+	"info": {
+		"_postman_id": "4faa2cec-f896-4d70-81e3-5216af8cc664",
+		"name": "RosetteEnterprise",
+		"description": "Welcome to the Rosette Text Analytics Platform! Rosette uses natural language processing, statistical modeling, and machine learning to analyze unstructured and semi-structured text across 364 language-encoding-script combinations, revealing valuable information and actionable data. Rosette provides endpoints for extracting entities and relationships, translating and comparing the similarity of names, categorizing and adding linguistic tags to text and more.\n\nContact Support:\n Name: Rosette Text Analytics API\n Email: support@rosette.com",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "address-similarity",
+			"item": [
+				{
+					"name": "Supported languages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d404d38e-8b6b-4251-8842-b56a5b443cd7",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Check array size of at least 1\", function() {",
+									"    var res = pm.response.json();",
+									"    pm.expect(res.supportedLanguagePairs).to.have.lengthOf.at.least(1);",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/address-similarity/supported-languages",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"address-similarity",
+								"supported-languages"
+							]
+						},
+						"description": "Returns a list of Rosette supported languages for the /address-similarity endpoint"
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/address-similarity/supported-languages",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"address-similarity",
+										"supported-languages"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"supportedLanguagePairs\": [\n  {\n   \"source\": {\n    \"transliterationScheme\": \"<string>\",\n    \"script\": \"<string>\",\n    \"language\": \"<string>\"\n   },\n   \"target\": {\n    \"transliterationScheme\": \"<string>\",\n    \"script\": \"<string>\",\n    \"language\": \"<string>\"\n   }\n  },\n  {\n   \"source\": {\n    \"transliterationScheme\": \"<string>\",\n    \"script\": \"<string>\",\n    \"language\": \"<string>\"\n   },\n   \"target\": {\n    \"transliterationScheme\": \"<string>\",\n    \"script\": \"<string>\",\n    \"language\": \"<string>\"\n   }\n  }\n ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Match addresses from input",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "34df915e-bcd2-4154-822a-7e30bf16bcd8",
+								"exec": [
+									"pm.test(\"Status code is 200 or 403 (not licensed)\", function () {",
+									"    pm.expect(responseCode.code === 200 || responseCode.code === 403 ).to.be.true;",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"pm.test(\"Validate address-similarity, score > 0.5 (if licensed)\", function() {",
+									"    if( responseCode.code === 200 ){",
+									"        var res = pm.response.json();",
+									"        pm.expect(res.score>0.5).to.be.true;",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"address1\": {\n        \"houseNumber\": 1600,\n        \"road\": \"Pennsylvania Ave. NW\",\n        \"city\": \"Washington\",\n        \"state\": \"D.C.\",\n        \"postCode\": 20500\n    },\n    \"address2\": {\n        \"houseNumber\": 160,\n        \"road\": \"Pennsilvana Avenue\",\n        \"city\": \"Washington\",\n        \"state\": \"D.C.\",\n        \"postCode\": 20500\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/address-similarity",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"address-similarity"
+							]
+						},
+						"description": "Returns the confidence score of matching 2 addresses.  You must specify the fields of the addresses to be matched."
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"address1\": {\n        \"houseNumber\": 1600,\n        \"road\": \"Pennsylvania Ave. NW\",\n        \"city\": \"Washington\",\n        \"state\": \"D.C.\",\n        \"postCode\": 20500\n    },\n    \"address2\": {\n        \"houseNumber\": 160,\n        \"road\": \"Pennsilvana Avenue\",\n        \"city\": \"Washington\",\n        \"state\": \"D.C.\",\n        \"postCode\": 20500\n    }\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/address-similarity",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"address-similarity"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"score\": \"<number>\"\n}"
+						}
+					]
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "categories",
+			"item": [
+				{
+					"name": "Supported languages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "cc4eac85-4cde-4ba9-a16e-07182f1f6431",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Check array size of at least 1\", function() {",
+									"    var res = pm.response.json();",
+									"    pm.expect(res.supportedLanguages).to.have.lengthOf.at.least(1);",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/categories/supported-languages",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"categories",
+								"supported-languages"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/categories/supported-languages",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"categories",
+										"supported-languages"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"supportedLanguages\": [\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  },\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  }\n ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Identify contextual categories in the input.",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0c33df24-e617-4799-957c-f349ab890c3b",
+								"exec": [
+									"pm.test(\"Status code is 200 or 403 (not licensed)\", function () {",
+									"    pm.expect(responseCode.code === 200 || responseCode.code === 403 ).to.be.true;",
+									"});",
+									"pm.test(\"Validate categories response, results sorted (if licensed)\", function() {",
+									"    if( responseCode.code === 200 ){",
+									"        var res = pm.response.json();",
+									"        var lastConfidence = -1;",
+									"        var sorted = 1;",
+									"        for( var i = 0; i < res.categories.length; i++ ) {",
+									"            if( lastConfidence === -1 ){",
+									"                lastConfidence = res.categories[i].confidence;",
+									"            } else {",
+									"                if( lastConfidence < res.categories[i].confidence ) {",
+									"                    sorted = 0;",
+									"                    break;",
+									"                }",
+									"                lastConfidence = res.categories[i].confidence;",
+									"            }",
+									"        }",
+									"        pm.expect(sorted===1).to.be.true;",
+									"    }",
+									"    ",
+									"});",
+									"pm.test(\"Response time is less than 300ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(300);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"If you are a fan of the British television series Downton Abbey and you are planning to be in New York anytime before April 2nd, there is a perfect stop for you while in town.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/categories",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"categories"
+							]
+						},
+						"description": "Returns a category or categories identified in the input.  The possible  categories are Tier 1 contextual categories defined in the QAG Taxonomy. The response is the contextual categories identified in the input."
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": \"If you are a fan of the British television series Downton Abbey and you are planning to be in New York anytime before April 2nd, there is a perfect stop for you while in town.\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/categories",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"categories"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"categories\": [\n  {\n   \"label\": \"<string>\",\n   \"confidence\": \"<number>\",\n   \"score\": \"<number>\"\n  },\n  {\n   \"label\": \"<string>\",\n   \"confidence\": \"<number>\",\n   \"score\": \"<number>\"\n  }\n ]\n}"
+						}
+					]
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "entities",
+			"item": [
+				{
+					"name": "Supported languages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "dd74a2fe-83b9-45d0-889c-1465a21dd5f2",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Check array size of at least 1\", function() {",
+									"    var res = pm.response.json();",
+									"    pm.expect(res.supportedLanguages).to.have.lengthOf.at.least(1);",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/entities/supported-languages",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"entities",
+								"supported-languages"
+							]
+						},
+						"description": "Returns a list of Rosette supported languages for the /entities endpoint"
+					},
+					"response": [
+						{
+							"name": "Successful",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/entities/supported-languages",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"entities",
+										"supported-languages"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"supportedLanguages\": [\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  },\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  }\n ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Extracts entities from a document and links them to a knowledge base.",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "86f4f974-e928-4d33-9dc3-1f8399d126cd",
+								"exec": [
+									"pm.test(\"Status code is 200 or 403 (not licensed)\", function () {",
+									"    pm.expect(responseCode.code === 200 || responseCode.code === 403 ).to.be.true;",
+									"});",
+									"pm.test(\"Validate entities response (if licensed)\", function() {",
+									"    if( responseCode.code === 200 ){",
+									"        var res = pm.response.json();",
+									"        pm.expect(res.entities).to.have.lengthOf.at.least(1);",
+									"        pm.expect(res.entities[0]).to.include({type: \"ORGANIZATION\",count: 3});",
+									"    }",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"The Securities and Exchange Commission today announced the leadership of the agency’s trial unit.  Bridget Fitzpatrick has been named Chief Litigation Counsel of the SEC and David Gottesman will continue to serve as the agency’s Deputy Chief Litigation Counsel. Since December 2016, Ms. Fitzpatrick and Mr. Gottesman have served as Co-Acting Chief Litigation Counsel.  In that role, they were jointly responsible for supervising the trial unit at the agency’s Washington D.C. headquarters as well as coordinating with litigators in the SEC’s 11 regional offices around the country.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/entities",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"entities"
+							]
+						},
+						"description": "Returns each entity extracted from the input.  The response is a list of extracted entities. Each entity includes an entityId (Wikidata QID or temporary ID), mention (entity text in the input), normalized text (complete form of the entity in the input), the count (number of mentions of entity in the input), the salience [optional] (floating point number 0.0 or 1.0), the confidence [optional] (floating point number between 0 and 1), the linking confidence [optional] (floating point number between 0 and 1), and the PermID [optional] (ID to PermID knowledge base)."
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": \"The Securities and Exchange Commission today announced the leadership of the agency’s trial unit.  Bridget Fitzpatrick has been named Chief Litigation Counsel of the SEC and David Gottesman will continue to serve as the agency’s Deputy Chief Litigation Counsel. Since December 2016, Ms. Fitzpatrick and Mr. Gottesman have served as Co-Acting Chief Litigation Counsel.  In that role, they were jointly responsible for supervising the trial unit at the agency’s Washington D.C. headquarters as well as coordinating with litigators in the SEC’s 11 regional offices around the country.\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/entities",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"entities"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"entitiesResponse\": [\n  {\n   \"type\": \"<string>\",\n   \"mention\": \"<string>\",\n   \"normalized\": \"<string>\",\n   \"count\": \"<integer>\",\n   \"mentionOffsets\": [\n    {\n     \"startOffset\": \"<integer>\",\n     \"endOffset\": \"<integer>\"\n    },\n    {\n     \"startOffset\": \"<integer>\",\n     \"endOffset\": \"<integer>\"\n    }\n   ],\n   \"entityId\": \"<string>\",\n   \"confidence\": \"<number>\",\n   \"linkingConfidence\": \"<number>\",\n   \"DPediaTypes\": [\n    {\n     \"DPpediaType\": \"<string>\"\n    },\n    {\n     \"DPpediaType\": \"<string>\"\n    }\n   ],\n   \"permId\": \"<string>\",\n   \"salience\": \"<number>\"\n  },\n  {\n   \"type\": \"<string>\",\n   \"mention\": \"<string>\",\n   \"normalized\": \"<string>\",\n   \"count\": \"<integer>\",\n   \"mentionOffsets\": [\n    {\n     \"startOffset\": \"<integer>\",\n     \"endOffset\": \"<integer>\"\n    },\n    {\n     \"startOffset\": \"<integer>\",\n     \"endOffset\": \"<integer>\"\n    }\n   ],\n   \"entityId\": \"<string>\",\n   \"confidence\": \"<number>\",\n   \"linkingConfidence\": \"<number>\",\n   \"DPediaTypes\": [\n    {\n     \"DPpediaType\": \"<string>\"\n    },\n    {\n     \"DPpediaType\": \"<string>\"\n    }\n   ],\n   \"permId\": \"<string>\",\n   \"salience\": \"<number>\"\n  }\n ]\n}"
+						}
+					]
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "language",
+			"item": [
+				{
+					"name": "Supported languages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a56695c4-b591-4030-b4c6-26d532993c50",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Check array size of at least 1\", function() {",
+									"    var res = pm.response.json();",
+									"    pm.expect(res.supportedLanguages).to.have.lengthOf.at.least(1);",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/language/supported-languages",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"language",
+								"supported-languages"
+							]
+						},
+						"description": "Returns a list of Rosette supported languages for the /languages endpoint"
+					},
+					"response": [
+						{
+							"name": "Successful",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/language/supported-languages",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"language",
+										"supported-languages"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"supportedLanguages\": [\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  },\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  }\n ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Identifies the language(s) in a document",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "88399fb7-fa52-4aeb-a4ac-eb81cd97943d",
+								"exec": [
+									"pm.test(\"Status code is 200 or 403 (not licensed)\", function () {",
+									"    pm.expect(responseCode.code === 200 || responseCode.code === 403 ).to.be.true;",
+									"});",
+									"pm.test(\"Validate language response (if licensed)\", function() {",
+									"    if( responseCode.code === 200 ){",
+									"        var res = pm.response.json();",
+									"        pm.expect(res.languageDetections).to.have.lengthOf.at.least(1);",
+									"        pm.expect(res.languageDetections[0]).to.include({language: \"spa\"});",
+									"    }",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"Por favor Señorita, says the man\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/language",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"language"
+							]
+						},
+						"description": "Returns list of candidate languages in order of descending confidence.  The response is an ordered list of identified languages, including language and identification confidence, sorted by descending confidence."
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": \"Por favor Señorita, says the man\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/language",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"language"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"languageDetections\": [\n  {\n   \"language\": \"<string>\",\n   \"confidence\": \"<number>\"\n  },\n  {\n   \"language\": \"<string>\",\n   \"confidence\": \"<number>\"\n  }\n ]\n}"
+						}
+					]
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "morphology",
+			"item": [
+				{
+					"name": "complete",
+					"item": [
+						{
+							"name": "Supported languages",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "8caf747f-d6b8-4e73-a8f3-454b2126365d",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Check array size of at least 1\", function() {",
+											"    var res = pm.response.json();",
+											"    pm.expect(res.supportedLanguages).to.have.lengthOf.at.least(1);",
+											"});",
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": "{{XRosetteAPIKey}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/morphology/:morphoFeature/supported-languages",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"morphology",
+										":morphoFeature",
+										"supported-languages"
+									],
+									"variable": [
+										{
+											"key": "morphoFeature",
+											"value": "complete",
+											"description": {
+												"content": "",
+												"type": "text/plain"
+											}
+										}
+									]
+								},
+								"description": "Returns a list of Rosette supported languages for the /morphology endpoint"
+							},
+							"response": [
+								{
+									"name": "Successful",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "X-RosetteAPI-Key",
+												"value": ""
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/morphology/<string>/supported-languages",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"morphology",
+												"<string>",
+												"supported-languages"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"supportedLanguages\": [\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  },\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  }\n ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Runs morphological analysis on input",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "a75061b1-c5ed-4cb7-9a0b-0552825182b3",
+										"exec": [
+											"pm.test(\"Status code is 200 or 403 (not licensed)\", function () {",
+											"    pm.expect(responseCode.code === 200 || responseCode.code === 403 ).to.be.true;",
+											"});",
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);",
+											"});",
+											"pm.test(\"Validate morphology/lemmas (Tokens and lemmas are equal)\", function() {",
+											"    if( responseCode.code === 200 ){",
+											"        var res = pm.response.json();",
+											"        pm.expect(res.tokens).to.have.lengthOf.at.least(1);",
+											"        pm.expect(res.tokens.length === res.lemmas.length ).to.be.true;",
+											"    }",
+											"});",
+											"pm.test(\"Validate morphology/parts-of-speech (Tokens and posTags are equal)\", function() {",
+											"    if( responseCode.code === 200 ){",
+											"        var res = pm.response.json();",
+											"        pm.expect(res.tokens).to.have.lengthOf.at.least(1);",
+											"        pm.expect(res.tokens.length === res.posTags.length ).to.be.true;",
+											"    }",
+											"});",
+											"pm.test(\"Validate morphology/compound-components (Tokens and compound components are equal)\", function() {",
+											"    if( responseCode.code === 200 ){",
+											"        var res = pm.response.json();",
+											"        pm.expect(res.tokens).to.have.lengthOf.at.least(1);",
+											"        pm.expect(res.tokens.length === res.compoundComponents.length ).to.be.true;",
+											"    }",
+											"});",
+											"pm.test(\"Validate morphology/han-readings (Tokens and hanReadins are equal)\", function() {",
+											"    if( responseCode.code === 200 ){",
+											"        var res = pm.response.json();",
+											"        pm.expect(res.tokens).to.have.lengthOf.at.least(1);",
+											"        pm.expect(res.tokens.length === res.hanReadings.length ).to.be.true;",
+											"    }",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": "{{XRosetteAPIKey}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": \"The quick brown fox jumped over the lazy dog. 👍🏾 Yes he did. B\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/morphology/:morphoFeature",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"morphology",
+										":morphoFeature"
+									],
+									"variable": [
+										{
+											"key": "morphoFeature",
+											"value": "complete",
+											"description": "Type of data to return"
+										}
+									]
+								},
+								"description": "Returns morphological analysis of input. The response may include lemmas, part of speech tags, compound word components, and Han readings. Support for specific return types depends on language."
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "X-RosetteAPI-Key",
+												"value": ""
+											},
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"content\": \"The quick brown fox jumped over the lazy dog. 👍🏾 Yes he did. B\"\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/morphology/<string>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"morphology",
+												"<string>"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"compounds\": [\n  [\n   \"<string>\",\n   \"<string>\"\n  ],\n  [\n   \"<string>\",\n   \"<string>\"\n  ]\n ],\n \"hanReadings\": [\n  [\n   \"<string>\",\n   \"<string>\"\n  ],\n  [\n   \"<string>\",\n   \"<string>\"\n  ]\n ],\n \"lemmas\": [\n  \"<string>\",\n  \"<string>\"\n ],\n \"posTags\": [\n  \"<string>\",\n  \"<string>\"\n ]\n}"
+								}
+							]
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "edab7210-900e-42de-b18b-eb21cf6be773",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "e6c4bb47-cb56-4868-9271-ce857cc6dca7",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "lemmas",
+					"item": [
+						{
+							"name": "Supported languages",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "b7d31a2e-9b79-4640-ad61-acfb90d2e28c",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Check array size of at least 1\", function() {",
+											"    var res = pm.response.json();",
+											"    pm.expect(res.supportedLanguages).to.have.lengthOf.at.least(1);",
+											"});",
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": "{{XRosetteAPIKey}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/morphology/:morphoFeature/supported-languages",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"morphology",
+										":morphoFeature",
+										"supported-languages"
+									],
+									"variable": [
+										{
+											"key": "morphoFeature",
+											"value": "lemmas",
+											"description": {
+												"content": "",
+												"type": "text/plain"
+											}
+										}
+									]
+								},
+								"description": "Returns a list of Rosette supported languages for the /morphology endpoint"
+							},
+							"response": [
+								{
+									"name": "Successful",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "X-RosetteAPI-Key",
+												"value": ""
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/morphology/<string>/supported-languages",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"morphology",
+												"<string>",
+												"supported-languages"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"supportedLanguages\": [\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  },\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  }\n ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Runs morphological analysis on input",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "a8572c8b-0231-4919-a540-d6b38c52572c",
+										"exec": [
+											"pm.test(\"Status code is 200 or 403 (not licensed)\", function () {",
+											"    pm.expect(responseCode.code === 200 || responseCode.code === 403 ).to.be.true;",
+											"});",
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);",
+											"});",
+											"pm.test(\"Validate morphology/lemmas (Tokens and lemmas are equal)\", function() {",
+											"    if( responseCode.code === 200 ){",
+											"        var res = pm.response.json();",
+											"        pm.expect(res.tokens).to.have.lengthOf.at.least(1);",
+											"        pm.expect(res.tokens.length === res.lemmas.length ).to.be.true;",
+											"    }",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": "{{XRosetteAPIKey}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": \"The quick brown fox jumped over the lazy dog. 👍🏾 Yes he did. B\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/morphology/:morphoFeature",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"morphology",
+										":morphoFeature"
+									],
+									"variable": [
+										{
+											"key": "morphoFeature",
+											"value": "lemmas",
+											"description": "Type of data to return"
+										}
+									]
+								},
+								"description": "Returns morphological analysis of input. The response may include lemmas, part of speech tags, compound word components, and Han readings. Support for specific return types depends on language."
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "X-RosetteAPI-Key",
+												"value": ""
+											},
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"content\": \"The quick brown fox jumped over the lazy dog. 👍🏾 Yes he did. B\"\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/morphology/<string>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"morphology",
+												"<string>"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"compounds\": [\n  [\n   \"<string>\",\n   \"<string>\"\n  ],\n  [\n   \"<string>\",\n   \"<string>\"\n  ]\n ],\n \"hanReadings\": [\n  [\n   \"<string>\",\n   \"<string>\"\n  ],\n  [\n   \"<string>\",\n   \"<string>\"\n  ]\n ],\n \"lemmas\": [\n  \"<string>\",\n  \"<string>\"\n ],\n \"posTags\": [\n  \"<string>\",\n  \"<string>\"\n ]\n}"
+								}
+							]
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "d393549b-63aa-4905-8686-26e76484a4a9",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "8ca56d7c-9d0f-483f-9b8f-083dfe277310",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "parts-of-speech",
+					"item": [
+						{
+							"name": "Supported languages",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "9e835824-fa51-4ea2-a48b-ac64794a561b",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Check array size of at least 1\", function() {",
+											"    var res = pm.response.json();",
+											"    pm.expect(res.supportedLanguages).to.have.lengthOf.at.least(1);",
+											"});",
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": "{{XRosetteAPIKey}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/morphology/:morphoFeature/supported-languages",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"morphology",
+										":morphoFeature",
+										"supported-languages"
+									],
+									"variable": [
+										{
+											"key": "morphoFeature",
+											"value": "parts-of-speech",
+											"description": {
+												"content": "",
+												"type": "text/plain"
+											}
+										}
+									]
+								},
+								"description": "Returns a list of Rosette supported languages for the /morphology endpoint"
+							},
+							"response": [
+								{
+									"name": "Successful",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "X-RosetteAPI-Key",
+												"value": ""
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/morphology/<string>/supported-languages",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"morphology",
+												"<string>",
+												"supported-languages"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"supportedLanguages\": [\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  },\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  }\n ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Runs morphological analysis on input",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "a262afb5-85ee-4151-8168-d684d82b05de",
+										"exec": [
+											"pm.test(\"Status code is 200 or 403 (not licensed)\", function () {",
+											"    pm.expect(responseCode.code === 200 || responseCode.code === 403 ).to.be.true;",
+											"});",
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);",
+											"});",
+											"pm.test(\"Validate morphology/parts-of-speech (Tokens and posTags are equal)\", function() {",
+											"    if( responseCode.code === 200 ){",
+											"        var res = pm.response.json();",
+											"        pm.expect(res.tokens).to.have.lengthOf.at.least(1);",
+											"        pm.expect(res.tokens.length === res.posTags.length ).to.be.true;",
+											"    }",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": "{{XRosetteAPIKey}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": \"The quick brown fox jumped over the lazy dog. 👍🏾 Yes he did. B\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/morphology/:morphoFeature",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"morphology",
+										":morphoFeature"
+									],
+									"variable": [
+										{
+											"key": "morphoFeature",
+											"value": "parts-of-speech",
+											"description": "Type of data to return"
+										}
+									]
+								},
+								"description": "Returns morphological analysis of input. The response may include lemmas, part of speech tags, compound word components, and Han readings. Support for specific return types depends on language."
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "X-RosetteAPI-Key",
+												"value": ""
+											},
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"content\": \"The quick brown fox jumped over the lazy dog. 👍🏾 Yes he did. B\"\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/morphology/<string>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"morphology",
+												"<string>"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"compounds\": [\n  [\n   \"<string>\",\n   \"<string>\"\n  ],\n  [\n   \"<string>\",\n   \"<string>\"\n  ]\n ],\n \"hanReadings\": [\n  [\n   \"<string>\",\n   \"<string>\"\n  ],\n  [\n   \"<string>\",\n   \"<string>\"\n  ]\n ],\n \"lemmas\": [\n  \"<string>\",\n  \"<string>\"\n ],\n \"posTags\": [\n  \"<string>\",\n  \"<string>\"\n ]\n}"
+								}
+							]
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "8808ef95-9768-430e-acad-6d3635436cc7",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "3f91296e-0e5c-4153-96e4-2516a668ee9a",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "compound-components",
+					"item": [
+						{
+							"name": "Supported languages",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "9a925006-1b5b-489c-b996-f53cddd83bc2",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Check array size of at least 1\", function() {",
+											"    var res = pm.response.json();",
+											"    pm.expect(res.supportedLanguages).to.have.lengthOf.at.least(1);",
+											"});",
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": "{{XRosetteAPIKey}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/morphology/:morphoFeature/supported-languages",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"morphology",
+										":morphoFeature",
+										"supported-languages"
+									],
+									"variable": [
+										{
+											"key": "morphoFeature",
+											"value": "compound-components",
+											"description": {
+												"content": "",
+												"type": "text/plain"
+											}
+										}
+									]
+								},
+								"description": "Returns a list of Rosette supported languages for the /morphology endpoint"
+							},
+							"response": [
+								{
+									"name": "Successful",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "X-RosetteAPI-Key",
+												"value": ""
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/morphology/<string>/supported-languages",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"morphology",
+												"<string>",
+												"supported-languages"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"supportedLanguages\": [\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  },\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  }\n ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Runs morphological analysis on input",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "607fce29-28fc-4079-a450-631267454bb7",
+										"exec": [
+											"pm.test(\"Status code is 200 or 403 (not licensed)\", function () {",
+											"    pm.expect(responseCode.code === 200 || responseCode.code === 403 ).to.be.true;",
+											"});",
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);",
+											"});",
+											"pm.test(\"Validate morphology/compound-components (Tokens and compound components are equal)\", function() {",
+											"    if( responseCode.code === 200 ){",
+											"        var res = pm.response.json();",
+											"        pm.expect(res.tokens).to.have.lengthOf.at.least(1);",
+											"        pm.expect(res.tokens.length === res.compoundComponents.length ).to.be.true;",
+											"    }",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": "{{XRosetteAPIKey}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": \"The quick brown fox jumped over the lazy dog. 👍🏾 Yes he did. B\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/morphology/:morphoFeature",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"morphology",
+										":morphoFeature"
+									],
+									"variable": [
+										{
+											"key": "morphoFeature",
+											"value": "compound-components",
+											"description": "Type of data to return"
+										}
+									]
+								},
+								"description": "Returns morphological analysis of input. The response may include lemmas, part of speech tags, compound word components, and Han readings. Support for specific return types depends on language."
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "X-RosetteAPI-Key",
+												"value": ""
+											},
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"content\": \"The quick brown fox jumped over the lazy dog. 👍🏾 Yes he did. B\"\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/morphology/<string>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"morphology",
+												"<string>"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"compounds\": [\n  [\n   \"<string>\",\n   \"<string>\"\n  ],\n  [\n   \"<string>\",\n   \"<string>\"\n  ]\n ],\n \"hanReadings\": [\n  [\n   \"<string>\",\n   \"<string>\"\n  ],\n  [\n   \"<string>\",\n   \"<string>\"\n  ]\n ],\n \"lemmas\": [\n  \"<string>\",\n  \"<string>\"\n ],\n \"posTags\": [\n  \"<string>\",\n  \"<string>\"\n ]\n}"
+								}
+							]
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ae26120b-1856-4b84-b174-a4f110c7db45",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "f51921f0-3f7d-4d65-8d4f-7d71094deac2",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "han-readings",
+					"item": [
+						{
+							"name": "Supported languages",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "6924406d-7ae9-4ef1-b676-5c46d3c5d6a2",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Check array size of at least 1\", function() {",
+											"    var res = pm.response.json();",
+											"    pm.expect(res.supportedLanguages).to.have.lengthOf.at.least(1);",
+											"});",
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": "{{XRosetteAPIKey}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/morphology/:morphoFeature/supported-languages",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"morphology",
+										":morphoFeature",
+										"supported-languages"
+									],
+									"variable": [
+										{
+											"key": "morphoFeature",
+											"value": "han-readings",
+											"description": {
+												"content": "",
+												"type": "text/plain"
+											}
+										}
+									]
+								},
+								"description": "Returns a list of Rosette supported languages for the /morphology endpoint"
+							},
+							"response": [
+								{
+									"name": "Successful",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "X-RosetteAPI-Key",
+												"value": ""
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/morphology/<string>/supported-languages",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"morphology",
+												"<string>",
+												"supported-languages"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"supportedLanguages\": [\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  },\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  }\n ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Runs morphological analysis on input",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "4999121b-e552-4d3c-9880-ff8abe50f595",
+										"exec": [
+											"pm.test(\"Status code is 200 or 403 (not licensed)\", function () {",
+											"    pm.expect(responseCode.code === 200 || responseCode.code === 403 ).to.be.true;",
+											"});",
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);",
+											"});",
+											"pm.test(\"Validate morphology/han-readings (Tokens and hanReadins are equal)\", function() {",
+											"    if( responseCode.code === 200 ){",
+											"        var res = pm.response.json();",
+											"        pm.expect(res.tokens).to.have.lengthOf.at.least(1);",
+											"        pm.expect(res.tokens.length === res.hanReadings.length ).to.be.true;",
+											"    }",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": "{{XRosetteAPIKey}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": \"The quick brown fox jumped over the lazy dog. 👍🏾 Yes he did. B\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/morphology/:morphoFeature",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"morphology",
+										":morphoFeature"
+									],
+									"variable": [
+										{
+											"key": "morphoFeature",
+											"value": "han-readings",
+											"description": "Type of data to return"
+										}
+									]
+								},
+								"description": "Returns morphological analysis of input. The response may include lemmas, part of speech tags, compound word components, and Han readings. Support for specific return types depends on language."
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "X-RosetteAPI-Key",
+												"value": ""
+											},
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"content\": \"The quick brown fox jumped over the lazy dog. 👍🏾 Yes he did. B\"\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/morphology/<string>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"morphology",
+												"<string>"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"compounds\": [\n  [\n   \"<string>\",\n   \"<string>\"\n  ],\n  [\n   \"<string>\",\n   \"<string>\"\n  ]\n ],\n \"hanReadings\": [\n  [\n   \"<string>\",\n   \"<string>\"\n  ],\n  [\n   \"<string>\",\n   \"<string>\"\n  ]\n ],\n \"lemmas\": [\n  \"<string>\",\n  \"<string>\"\n ],\n \"posTags\": [\n  \"<string>\",\n  \"<string>\"\n ]\n}"
+								}
+							]
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "246eac15-e98c-4d20-be14-53e8f4b59c4f",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "ac8e5a84-7d36-4173-9c5f-7f063264fb15",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Supported languages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8caf747f-d6b8-4e73-a8f3-454b2126365d",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Check array size of at least 1\", function() {",
+									"    var res = pm.response.json();",
+									"    pm.expect(res.supportedLanguages).to.have.lengthOf.at.least(1);",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/morphology/supported-languages",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"morphology",
+								"supported-languages"
+							]
+						},
+						"description": "Returns a list of Rosette supported languages for the /morphology endpoint"
+					},
+					"response": [
+						{
+							"name": "Successful",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/morphology/<string>/supported-languages",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"morphology",
+										"<string>",
+										"supported-languages"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"supportedLanguages\": [\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  },\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  }\n ]\n}"
+						}
+					]
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "name-deduplication",
+			"item": [
+				{
+					"name": "Supported languages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0bf2c99e-0d68-4fbd-9cd5-2ede2702296c",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Check array size of at least 1\", function() {",
+									"    var res = pm.response.json();",
+									"    pm.expect(res.supportedLanguages).to.have.lengthOf.at.least(1);",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/name-deduplication/supported-languages",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"name-deduplication",
+								"supported-languages"
+							]
+						},
+						"description": "Returns a list of Rosette supported languages for the /name-similarity endpoint"
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/name-similarity/supported-languages",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"name-similarity",
+										"supported-languages"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"supportedLanguagePairs\": [\n  {\n   \"source\": {\n    \"transliterationScheme\": \"<string>\",\n    \"script\": \"<string>\",\n    \"language\": \"<string>\"\n   },\n   \"target\": {\n    \"transliterationScheme\": \"<string>\",\n    \"script\": \"<string>\",\n    \"language\": \"<string>\"\n   }\n  },\n  {\n   \"source\": {\n    \"transliterationScheme\": \"<string>\",\n    \"script\": \"<string>\",\n    \"language\": \"<string>\"\n   },\n   \"target\": {\n    \"transliterationScheme\": \"<string>\",\n    \"script\": \"<string>\",\n    \"language\": \"<string>\"\n   }\n  }\n ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Deduplicates names from input",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "472f60c6-577f-4fcf-a548-09bff7d45680",
+								"exec": [
+									"pm.test(\"Status code is 200 or 403 (not licensed)\", function () {",
+									"    pm.expect(responseCode.code === 200 || responseCode.code === 403 ).to.be.true;",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"pm.test(\"Validate name-deduplication, all indices unique\", function() {",
+									"    if( responseCode.code === 200 ){",
+									"        var res = pm.response.json();",
+									"        pm.expect(res.results).to.deep.equal(['1','2','3']);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"names\": [\n        {\n            \"text\": \"Joe Smith\"\n        },\n        {\n            \"text\": \"Joe Smidge\"\n        },\n        {\n            \"text\": \"Alex Black\"\n        }\n    ],\n    \"threshold\": 0.8\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/name-deduplication",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"name-deduplication"
+							]
+						},
+						"description": "Returns a list of cluster IDs to be used for deduplication, given a list  of names and a score threshold. Position in the cluster ID list corresponds to the position of a name in the input list, and identical cluster IDs signify names that are considered to be duplicates."
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"names\": [\n        {\n            \"text\": \"Joe Smith\"\n        },\n        {\n            \"text\": \"Joe Smidge\"\n        },\n        {\n            \"text\": \"Alex Black\"\n        }\n    ],\n    \"threshold\": 0.8\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/name-deduplication",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"name-deduplication"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"results\": [\n  \"<string>\",\n  \"<string>\"\n ]\n}"
+						}
+					]
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "name-similarity",
+			"item": [
+				{
+					"name": "Supported languages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0bf2c99e-0d68-4fbd-9cd5-2ede2702296c",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Check array size of at least 1\", function() {",
+									"    var res = pm.response.json();",
+									"    pm.expect(res.supportedLanguagePairs).to.have.lengthOf.at.least(1);",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/name-similarity/supported-languages",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"name-similarity",
+								"supported-languages"
+							]
+						},
+						"description": "Returns a list of Rosette supported languages for the /name-similarity endpoint"
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/name-similarity/supported-languages",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"name-similarity",
+										"supported-languages"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"supportedLanguagePairs\": [\n  {\n   \"source\": {\n    \"transliterationScheme\": \"<string>\",\n    \"script\": \"<string>\",\n    \"language\": \"<string>\"\n   },\n   \"target\": {\n    \"transliterationScheme\": \"<string>\",\n    \"script\": \"<string>\",\n    \"language\": \"<string>\"\n   }\n  },\n  {\n   \"source\": {\n    \"transliterationScheme\": \"<string>\",\n    \"script\": \"<string>\",\n    \"language\": \"<string>\"\n   },\n   \"target\": {\n    \"transliterationScheme\": \"<string>\",\n    \"script\": \"<string>\",\n    \"language\": \"<string>\"\n   }\n  }\n ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Match names from input",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e0f8fa46-6f62-42a4-9c94-dbb0c999861b",
+								"exec": [
+									"pm.test(\"Status code is 200 or 403 (not licensed)\", function () {",
+									"    pm.expect(responseCode.code === 200 || responseCode.code === 403 ).to.be.true;",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"pm.test(\"Validate name-similarity score > 0.5\", function() {",
+									"    if( responseCode.code === 200 ){",
+									"        var res = pm.response.json();",
+									"        pm.expect(res.score>0.5).to.be.true;",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name1\": \"Michael Jackson\",\n    \"name2\": \"迈克尔·杰克逊\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/name-similarity",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"name-similarity"
+							]
+						},
+						"description": "Returns the confidence score of matching 2 names.  You must specify the names to be matched."
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name1\": \"Michael Jackson\",\n    \"name2\": \"迈克尔·杰克逊\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/name-similarity",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"name-similarity"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"score\": \"<number>\"\n}"
+						}
+					]
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "name-translation",
+			"item": [
+				{
+					"name": "Supported languages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3c990b46-a731-4f42-81a2-6ffe228dfa85",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Check array size of at least 1\", function() {",
+									"    var res = pm.response.json();",
+									"    pm.expect(res.supportedLanguagePairs).to.have.lengthOf.at.least(1);",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/name-translation/supported-languages",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"name-translation",
+								"supported-languages"
+							]
+						},
+						"description": "Returns a list of Rosette supported languages for the /name-translation endpoint"
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/name-translation/supported-languages",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"name-translation",
+										"supported-languages"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"supportedLanguagePairs\": [\n  {\n   \"source\": {\n    \"transliterationScheme\": \"<string>\",\n    \"script\": \"<string>\",\n    \"language\": \"<string>\"\n   },\n   \"target\": {\n    \"transliterationScheme\": \"<string>\",\n    \"script\": \"<string>\",\n    \"language\": \"<string>\"\n   }\n  },\n  {\n   \"source\": {\n    \"transliterationScheme\": \"<string>\",\n    \"script\": \"<string>\",\n    \"language\": \"<string>\"\n   },\n   \"target\": {\n    \"transliterationScheme\": \"<string>\",\n    \"script\": \"<string>\",\n    \"language\": \"<string>\"\n   }\n  }\n ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Translate names from input",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "77de33ad-d17d-4475-94b1-8f6b1c49f67d",
+								"exec": [
+									"pm.test(\"Status code is 200 or 403 (not licensed)\", function () {",
+									"    pm.expect(responseCode.code === 200 || responseCode.code === 403 ).to.be.true;",
+									"});",
+									"pm.test(\"Validate name-translation response (if licensed)\", function() {",
+									"    if( responseCode.code === 200 ){",
+									"        var res = pm.response.json();",
+									"        pm.expect(res.translation).to.eql(\"Mu'ammar Muhammad Abu-Minyar al-Qadhaf\");        ",
+									"    }",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"معمر محمد أبو منيار القذاف\",\n    \"targetLanguage\": \"eng\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/name-translation",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"name-translation"
+							]
+						},
+						"description": "Returns the translation of a name. You must specify the name to translate and the target language for the translation. You can also include additional parameters."
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"معمر محمد أبو منيار القذاف\",\n    \"targetLanguage\": \"eng\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/name-translation",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"name-translation"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"confidence\": \"<number>\",\n \"targetLanguage\": \"schema type not provided\",\n \"targetScheme\": \"<string>\",\n \"targetScript\": \"<string>\",\n \"translation\": \"<string>\"\n}"
+						}
+					]
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "relationships",
+			"item": [
+				{
+					"name": "Supported languages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6caa1285-0155-427a-a622-e2723ce34fcc",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Check array size of at least 1\", function() {",
+									"    var res = pm.response.json();",
+									"    pm.expect(res.supportedLanguages).to.have.lengthOf.at.least(1);",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/relationships/supported-languages",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"relationships",
+								"supported-languages"
+							]
+						},
+						"description": "Returns a list of Rosette supported languages for the /relationships endpoint"
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/relationships/supported-languages",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"relationships",
+										"supported-languages"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"supportedLanguages\": [\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  },\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  }\n ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Extract relationships from input",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "087ac4fb-c5e6-466d-b368-91e486517fcd",
+								"exec": [
+									"pm.test(\"Status code is 200 or 403 (not licensed)\", function () {",
+									"    pm.expect(responseCode.code === 200 || responseCode.code === 403 ).to.be.true;",
+									"});",
+									"pm.test(\"Validate relationships response (if licensed)\", function() {",
+									"    if( responseCode.code === 200 ){",
+									"        var res = pm.response.json();",
+									"        pm.expect(res.relationships).to.have.lengthOf.at.least(1);",
+									"        pm.expect(res.relationships).to.deep.include({predicate: \"Organization Headquarters\", predicateId: \"ORG-HEADQUARTERS\", arg1: \"FLIR Systems\", arg1Id: \"Q5426537\", arg2: \"Oregon\", arg2Id: \"Q824\"});",
+									"    }",
+									"});",
+									"pm.test(\"Response time is less than 500ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"FLIR Systems is headquartered in Oregon and produces thermal imaging, night vision, and infrared cameras and sensor systems.  According to the SEC’s order instituting a settled administrative proceeding, FLIR entered into a multi-million dollar contract to provide thermal binoculars to the Saudi government in November 2008.  Timms and Ramahi were the primary sales employees responsible for the contract, and also were involved in negotiations to sell FLIR’s security cameras to the same government officials.  At the time, Timms was the head of FLIR’s Middle East office in Dubai.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/relationships",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"relationships"
+							]
+						},
+						"description": "Returns the relationships between entities in the input text. <br><br> The response is a list of extracted relationships. A relationship contains <br><br> predicate - usually the main verb, property or action that is expressed by the text<br> arg1 - usually the subject, agent or main actor of the relationship<br> arg1Id [optional] - the entity ID to link an entity to a knowledgebase <br> arg2 [optional] - complements the predicate and is usually the object, theme or patient of the relationship<br> arg2Id [optional] - the entity ID to link an entity to a knowledgebase<br> confidence - a measure of quality of relationship extraction, between 0 - 1 "
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": \"FLIR Systems is headquartered in Oregon and produces thermal imaging, night vision, and infrared cameras and sensor systems.  According to the SEC’s order instituting a settled administrative proceeding, FLIR entered into a multi-million dollar contract to provide thermal binoculars to the Saudi government in November 2008.  Timms and Ramahi were the primary sales employees responsible for the contract, and also were involved in negotiations to sell FLIR’s security cameras to the same government officials.  At the time, Timms was the head of FLIR’s Middle East office in Dubai.\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/relationships",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"relationships"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"relationships\": [\n  {\n   \"arg1\": \"<string>\",\n   \"arg1id\": \"<string>\",\n   \"arg2\": \"<string>\",\n   \"arg2id\": \"<string>\",\n   \"confidence\": \"<number>\",\n   \"predicate\": \"<string>\"\n  },\n  {\n   \"arg1\": \"<string>\",\n   \"arg1id\": \"<string>\",\n   \"arg2\": \"<string>\",\n   \"arg2id\": \"<string>\",\n   \"confidence\": \"<number>\",\n   \"predicate\": \"<string>\"\n  }\n ]\n}"
+						}
+					]
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "semantics",
+			"item": [
+				{
+					"name": "similar",
+					"item": [
+						{
+							"name": "Supported languages",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "599e4fd5-5aaf-4756-ae1b-dad93077dadc",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Check array size of at least 1\", function() {",
+											"    var res = pm.response.json();",
+											"    pm.expect(res.supportedLanguages).to.have.lengthOf.at.least(1);",
+											"});",
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": "{{XRosetteAPIKey}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/semantics/similar/supported-languages",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"semantics",
+										"similar",
+										"supported-languages"
+									]
+								},
+								"description": "Returns a list of Rosette supported languages for the /semantics/similar endpoint"
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "X-RosetteAPI-Key",
+												"value": ""
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/semantics/similar/supported-languages",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"semantics",
+												"similar",
+												"supported-languages"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"supportedLanguages\": [\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  },\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  }\n ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Finds terms similar to the input",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "55b6ee17-8b98-4025-abd2-bd7cdd08546b",
+										"exec": [
+											"pm.test(\"Status code is 200 or 403 (not licensed)\", function () {",
+											"    pm.expect(responseCode.code === 200 || responseCode.code === 403 ).to.be.true;",
+											"});",
+											"pm.test(\"Validate semantics/similar response (if licensed)\", function() {",
+											"    if( responseCode.code === 200 ){",
+											"        var res = pm.response.json();",
+											"        pm.expect(res.similarTerms.eng).to.have.length.at.least(1);",
+											"        pm.expect(res.similarTerms.eng).to.deep.include({ term: \"spy\", similarity: 1.0 });",
+											"    }",
+											"});",
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": "{{XRosetteAPIKey}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": \"spy\",\n    \"options\": {\n        \"resultLanguages\": [\n            \"eng\",\n            \"spa\",\n            \"deu\",\n            \"jpn\"\n        ]\n    }\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/semantics/similar",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"semantics",
+										"similar"
+									]
+								},
+								"description": "Provides the terms similar to the input. <br><br> Returns a mapping of each requested language to a list of terms  similar to the input"
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "X-RosetteAPI-Key",
+												"value": ""
+											},
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"content\": \"spy\",\n    \"options\": {\n        \"resultLanguages\": [\n            \"eng\",\n            \"spa\",\n            \"deu\",\n            \"jpn\"\n        ]\n    }\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/semantics/similar",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"semantics",
+												"similar"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"relationships\": [\n  {\n   \"similarTerms\": {\n    \"language\": \"<string>\",\n    \"similarTerms\": [\n     {\n      \"term\": \"<string>\",\n      \"similarity\": \"<number>\"\n     },\n     {\n      \"term\": \"<string>\",\n      \"similarity\": \"<number>\"\n     }\n    ]\n   }\n  },\n  {\n   \"similarTerms\": {\n    \"language\": \"<string>\",\n    \"similarTerms\": [\n     {\n      \"term\": \"<string>\",\n      \"similarity\": \"<number>\"\n     },\n     {\n      \"term\": \"<string>\",\n      \"similarity\": \"<number>\"\n     }\n    ]\n   }\n  }\n ]\n}"
+								}
+							]
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "vector",
+					"item": [
+						{
+							"name": "Supported languages",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "9c64513e-f4e5-4bbc-aacb-0f261b9c6d3e",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Check array size of at least 1\", function() {",
+											"    var res = pm.response.json();",
+											"    pm.expect(res.supportedLanguages).to.have.lengthOf.at.least(1);",
+											"});",
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": "{{XRosetteAPIKey}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/semantics/vector/supported-languages",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"semantics",
+										"vector",
+										"supported-languages"
+									]
+								},
+								"description": "Returns a list of Rosette supported languages for the /semantics/vector endpoint"
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "X-RosetteAPI-Key",
+												"value": ""
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/semantics/vector/supported-languages",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"semantics",
+												"vector",
+												"supported-languages"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"supportedLanguages\": [\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  },\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  }\n ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Create embeddings from input",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "c7d205bf-1afa-4750-9e1e-6e5d2ff67f43",
+										"exec": [
+											"pm.test(\"Status code is 200 or 403 (not licensed)\", function () {",
+											"    pm.expect(responseCode.code === 200 || responseCode.code === 403 ).to.be.true;",
+											"});",
+											"pm.test(\"Validate semantics/vector response (if licensed)\", function() {",
+											"    if( responseCode.code === 200 ){",
+											"        var res = pm.response.json();",
+											"        pm.expect(res.documentEmbedding).to.have.length.at.least(1)",
+											"    }",
+											"});",
+											"pm.test(\"Response time is less than 200ms\", function () {",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": "{{XRosetteAPIKey}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": \"Cambridge, Massachusetts\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/semantics/vector",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"semantics",
+										"vector"
+									]
+								},
+								"description": "Provides the embedding for the input text. <br><br>Returns a single vector of floating point numbers for your input, known as a text embedding. Among other uses, a text embedding enables you to calculate the similarity between two documents or two words."
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "X-RosetteAPI-Key",
+												"value": ""
+											},
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"content\": \"Cambridge, Massachusetts\"\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/semantics/vector",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"semantics",
+												"vector"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"documentEmbedding\": [\n  \"<number>\",\n  \"<number>\"\n ],\n \"tokenEmbeddings\": [\n  \"<number>\",\n  \"<number>\"\n ],\n \"tokens\": [\n  \"<string>\",\n  \"<string>\"\n ]\n}"
+								}
+							]
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "sentences",
+			"item": [
+				{
+					"name": "Supported languages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a9f4d5b2-7072-413a-a30d-49d3d2cdc5da",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Check array size of at least 1\", function() {",
+									"    var res = pm.response.json();",
+									"    pm.expect(res.supportedLanguages).to.have.lengthOf.at.least(1);",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/sentences/supported-languages",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"sentences",
+								"supported-languages"
+							]
+						},
+						"description": "Returns a list of Rosette supported languages for the /sentences endpoint"
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/sentences/supported-languages",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"sentences",
+										"supported-languages"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"supportedLanguages\": [\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  },\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  }\n ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Determine sentences",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "76c6e06c-c80a-42c8-97b2-b1e6123623c6",
+								"exec": [
+									"pm.test(\"Status code is 200 or 403 (not licensed)\", function () {",
+									"    pm.expect(responseCode.code === 200 || responseCode.code === 403 ).to.be.true;",
+									"});",
+									"pm.test(\"Validate sentences response (if licensed)\", function() {",
+									"    if( responseCode.code === 200 ){",
+									"        var res = pm.response.json();",
+									"        pm.expect(res.sentences).to.have.lengthOf.at.least(1);",
+									"        pm.expect(res.sentences).that.includes(\"This land is your land. \");",
+									"    }",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"This land is your land. This land is my land, from California to the New York island; from the red wood forest to the Gulf Stream waters. This land was made for you and Me. As I was walking that ribbon of highway, I saw above me that endless skyway: I saw below me that golden valley: This land was made for you and me.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/sentences",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"sentences"
+							]
+						},
+						"description": "Divides the input into sentences.<br><br> The response contains a list of sentences."
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": \"This land is your land. This land is my land, from California to the New York island; from the red wood forest to the Gulf Stream waters. This land was made for you and Me. As I was walking that ribbon of highway, I saw above me that endless skyway: I saw below me that golden valley: This land was made for you and me.\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/sentences",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"sentences"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"sentences\": [\n  \"<string>\",\n  \"<string>\"\n ]\n}"
+						}
+					]
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "sentiment",
+			"item": [
+				{
+					"name": "Supported languages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "51ad4f30-9884-489a-a0fc-22308792d891",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Check array size of at least 1\", function() {",
+									"    var res = pm.response.json();",
+									"    pm.expect(res.supportedLanguages).to.have.lengthOf.at.least(1);",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/sentiment/supported-languages",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"sentiment",
+								"supported-languages"
+							]
+						},
+						"description": "Returns a list of Rosette supported languages for the /sentiment endpoint"
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/sentiment/supported-languages",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"sentiment",
+										"supported-languages"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"supportedLanguages\": [\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  },\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  }\n ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Analyze sentiment of input",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "53c0df3e-99f0-4dec-88c9-8219a6c49fbf",
+								"exec": [
+									"pm.test(\"Status code is 200 or 403 (not licensed)\", function () {",
+									"    pm.expect(responseCode.code === 200 || responseCode.code === 403 ).to.be.true;",
+									"});",
+									"pm.test(\"Validate sentiment response (if licensed)\", function() {",
+									"    if( responseCode.code === 200 ){",
+									"        var res = pm.response.json();",
+									"        pm.expect(res.entities).to.have.lengthOf.at.least(1);",
+									"        pm.expect(res.entities[0]).to.include({mention: \"Ghostbusters\", count: 3},\"Ghostbusters isn't the first entry\");",
+									"    }",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"Original Ghostbuster Dan Aykroyd, who also co-wrote the 1984 Ghostbusters film, couldn’t be more pleased with the new all-female Ghostbusters cast, telling The Hollywood Reporter, “The Aykroyd family is delighted by this inheritance of the Ghostbusters torch by these most magnificent women in comedy.”\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/sentiment",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"sentiment"
+							]
+						},
+						"description": "Analyzes the positive and negative sentiment expressed by the input. <br><br>The response contains sentiment analysis results."
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": \"Original Ghostbuster Dan Aykroyd, who also co-wrote the 1984 Ghostbusters film, couldn’t be more pleased with the new all-female Ghostbusters cast, telling The Hollywood Reporter, “The Aykroyd family is delighted by this inheritance of the Ghostbusters torch by these most magnificent women in comedy.”\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/sentiment",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"sentiment"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"document\": {\n  \"confidence\": \"<number>\",\n  \"label\": \"<string>\"\n },\n \"entities\": [\n  {\n   \"type\": \"<string>\",\n   \"mention\": \"<string>\",\n   \"normalized\": \"<string>\",\n   \"count\": \"<integer>\",\n   \"mentionOffsets\": [\n    {\n     \"startOffset\": \"<integer>\",\n     \"endOffset\": \"<integer>\"\n    },\n    {\n     \"startOffset\": \"<integer>\",\n     \"endOffset\": \"<integer>\"\n    }\n   ],\n   \"entityId\": \"<string>\",\n   \"confidence\": \"<number>\",\n   \"linkingConfidence\": \"<number>\",\n   \"DPediaTypes\": [\n    {\n     \"DPpediaType\": \"<string>\"\n    },\n    {\n     \"DPpediaType\": \"<string>\"\n    }\n   ],\n   \"permId\": \"<string>\",\n   \"salience\": \"<number>\"\n  },\n  {\n   \"type\": \"<string>\",\n   \"mention\": \"<string>\",\n   \"normalized\": \"<string>\",\n   \"count\": \"<integer>\",\n   \"mentionOffsets\": [\n    {\n     \"startOffset\": \"<integer>\",\n     \"endOffset\": \"<integer>\"\n    },\n    {\n     \"startOffset\": \"<integer>\",\n     \"endOffset\": \"<integer>\"\n    }\n   ],\n   \"entityId\": \"<string>\",\n   \"confidence\": \"<number>\",\n   \"linkingConfidence\": \"<number>\",\n   \"DPediaTypes\": [\n    {\n     \"DPpediaType\": \"<string>\"\n    },\n    {\n     \"DPpediaType\": \"<string>\"\n    }\n   ],\n   \"permId\": \"<string>\",\n   \"salience\": \"<number>\"\n  }\n ]\n}"
+						}
+					]
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "syntax/dependencies",
+			"item": [
+				{
+					"name": "Supported languages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "abed7d83-4b94-4176-8bb3-ea8cf2d727de",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Check array size of at least 1\", function() {",
+									"    var res = pm.response.json();",
+									"    pm.expect(res.supportedLanguages).to.have.lengthOf.at.least(1);",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/syntax/dependencies/supported-languages",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"syntax",
+								"dependencies",
+								"supported-languages"
+							]
+						},
+						"description": "Returns a list of Rosette supported languages for the /syntax/dependencies endpoint"
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/syntax/dependencies/supported-languages",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"syntax",
+										"dependencies",
+										"supported-languages"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"supportedLanguages\": [\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  },\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  }\n ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Create dependency data from input",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fc5c5719-ff68-4b85-b2e3-983795d038d4",
+								"exec": [
+									"pm.test(\"Status code is 200 or 403 (not licensed)\", function () {",
+									"    pm.expect(responseCode.code === 200 || responseCode.code === 403 ).to.be.true;",
+									"});",
+									"pm.test(\"Validate syntax/dependencies response (if licensed)\", function() {",
+									"    if( responseCode.code === 200 ){",
+									"        var res = pm.response.json();",
+									"        pm.expect(res.sentences).to.have.lengthOf(1);",
+									"    }",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"Yoshinori Ohsumi, a Japanese cell biologist, was awarded the Nobel Prize in Physiology or Medicine on Monday.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/syntax/dependencies",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"syntax",
+								"dependencies"
+							]
+						},
+						"description": "The Rosette API’s /syntax/dependencies endpoint will return the parse tree of the input text as a list of labeled directed links between tokens, as well as the list of tokens in the input sentence. <br><br>The /syntax/dependencies endpoint returns a list of sentences, their offsets, and their labeled dependencies, all connected to a list of tokens by indices."
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": \"Yoshinori Ohsumi, a Japanese cell biologist, was awarded the Nobel Prize in Physiology or Medicine on Monday.\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/syntax/dependencies",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"syntax",
+										"dependencies"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"sentence\": [\n  {\n   \"dependencies\": [\n    {\n     \"dependencyType\": \"<string>\",\n     \"dependentTokenIndex\": \"<number>\",\n     \"governorTokenIndex\": \"<number>\"\n    },\n    {\n     \"dependencyType\": \"<string>\",\n     \"dependentTokenIndex\": \"<number>\",\n     \"governorTokenIndex\": \"<number>\"\n    }\n   ],\n   \"endTokenIndex\": \"<integer>\",\n   \"startTokenIndex\": \"<integer>\"\n  },\n  {\n   \"dependencies\": [\n    {\n     \"dependencyType\": \"<string>\",\n     \"dependentTokenIndex\": \"<number>\",\n     \"governorTokenIndex\": \"<number>\"\n    },\n    {\n     \"dependencyType\": \"<string>\",\n     \"dependentTokenIndex\": \"<number>\",\n     \"governorTokenIndex\": \"<number>\"\n    }\n   ],\n   \"endTokenIndex\": \"<integer>\",\n   \"startTokenIndex\": \"<integer>\"\n  }\n ],\n \"tokens\": [\n  \"<string>\",\n  \"<string>\"\n ]\n}"
+						}
+					]
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "tokens",
+			"item": [
+				{
+					"name": "Supported languages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3e31b3d7-204b-4871-a18b-5aea23f6b65f",
+								"exec": [
+									"pm.test(\"Status code is 200 or 403 (not licensed)\", function () {",
+									"    pm.expect(responseCode.code === 200 || responseCode.code === 403 ).to.be.true;",
+									"});",
+									"pm.test(\"Check array size of at least 1\", function() {",
+									"    var res = pm.response.json();",
+									"    pm.expect(res.supportedLanguages).to.have.lengthOf.at.least(1);",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/tokens/supported-languages",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tokens",
+								"supported-languages"
+							]
+						},
+						"description": "Returns a list of Rosette supported languages for the /tokens endpoint"
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/tokens/supported-languages",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"tokens",
+										"supported-languages"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"supportedLanguages\": [\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  },\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  }\n ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Tokenize input",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5b8efc17-f893-4bed-8523-4834232f643d",
+								"exec": [
+									"pm.test(\"Status code is 200 or 403 (not licensed)\", function () {",
+									"    pm.expect(responseCode.code === 200 || responseCode.code === 403 ).to.be.true;",
+									"});",
+									"pm.test(\"Validate tokens response (if licensed)\", function() {",
+									"    if( responseCode.code === 200 ){",
+									"        var res = pm.response.json();",
+									"        pm.expect(res.tokens).to.have.lengthOf.at.least(1);",
+									"        pm.expect(res.tokens).that.includes(\"办公室\");",
+									"    }",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"北京大学生物系主任办公室内部会议\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/tokens",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tokens"
+							]
+						},
+						"description": "Divides the input into tokens. <br><br>The response contains a list of tokens."
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": \"北京大学生物系主任办公室内部会议\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/tokens",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"tokens"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"tokens\": [\n  \"<string>\",\n  \"<string>\"\n ]\n}"
+						}
+					]
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "topics",
+			"item": [
+				{
+					"name": "Supported languages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2457d434-3ada-4a32-b8e0-8eba71fa739c",
+								"exec": [
+									"pm.test(\"Status code is 200 or 403 (not licensed)\", function () {",
+									"    pm.expect(responseCode.code === 200 || responseCode.code === 403 ).to.be.true;",
+									"});",
+									"pm.test(\"Check array size of at least 1\", function() {",
+									"    var res = pm.response.json();",
+									"    pm.expect(res.supportedLanguages).to.have.lengthOf.at.least(1);",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/topics/supported-languages",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"topics",
+								"supported-languages"
+							]
+						},
+						"description": "Returns a list of Rosette supported languages for the /topics endpoint"
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/topics/supported-languages",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"topics",
+										"supported-languages"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"supportedLanguages\": [\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  },\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  }\n ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Extract topics from input",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "759745a7-8fb7-4f5d-8e03-2031aca5bd12",
+								"exec": [
+									"pm.test(\"Status code is 200 or 403 (not licensed)\", function () {",
+									"    pm.expect(responseCode.code === 200 || responseCode.code === 403 ).to.be.true;",
+									"});",
+									"pm.test(\"Validate topics response (if licensed)\", function() {",
+									"    if( responseCode.code === 200 ){",
+									"        var res = pm.response.json();",
+									"        pm.expect(res.keyphrases).to.have.lengthOf.at.least(1);",
+									"        pm.expect(res.concepts).to.have.lengthOf.at.least(1);",
+									"        pm.expect(res.keyphrases).to.deep.include({phrase:\"J.R.R. Tolkien biopic Tolkien\",salience: 1.0});",
+									"    }",
+									"});",
+									"pm.test(\"Response time is less than 500ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"Lily Collins is in talks to join Nicholas Hoult in Chernin Entertainment and Fox Searchlight's J.R.R. Tolkien biopic Tolkien. Anthony Boyle, known for playing Scorpius Malfoy in the British play Harry Potter and the Cursed Child, also has signed on for the film centered on the famed author. In Tolkien, Hoult will play the author of the Hobbit and Lord of the Rings book series that were later adapted into two Hollywood trilogies from Peter Jackson. Dome Karukoski is directing the project.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/topics",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"topics"
+							]
+						},
+						"description": "Returns each topic extracted from the input. <br><br>The response is a list of extracted keyphrases and a list of extracted concepts."
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": \"Lily Collins is in talks to join Nicholas Hoult in Chernin Entertainment and Fox Searchlight's J.R.R. Tolkien biopic Tolkien. Anthony Boyle, known for playing Scorpius Malfoy in the British play Harry Potter and the Cursed Child, also has signed on for the film centered on the famed author. In Tolkien, Hoult will play the author of the Hobbit and Lord of the Rings book series that were later adapted into two Hollywood trilogies from Peter Jackson. Dome Karukoski is directing the project.\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/topics",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"topics"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"concepts\": [\n  {\n   \"conceptId\": \"<string>\",\n   \"phrase\": \"<string>\",\n   \"salience\": \"<number>\"\n  },\n  {\n   \"conceptId\": \"<string>\",\n   \"phrase\": \"<string>\",\n   \"salience\": \"<number>\"\n  }\n ],\n \"keyphrase\": [\n  {\n   \"phrase\": \"<string>\",\n   \"salience\": \"<number>\"\n  },\n  {\n   \"phrase\": \"<string>\",\n   \"salience\": \"<number>\"\n  }\n ]\n}"
+						}
+					]
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "transliteration",
+			"item": [
+				{
+					"name": "Supported languages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "da9287bb-2625-4621-9fe9-753a052631ab",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Check array size of at least 2\", function() {",
+									"    var res = pm.response.json();",
+									"    pm.expect(res.supportedLanguages).to.have.lengthOf.at.least(2);",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/transliteration/supported-languages",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"transliteration",
+								"supported-languages"
+							]
+						},
+						"description": "Returns a list of Rosette supported languages for the /transliteration endpoint"
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/transliteration/supported-languages",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"transliteration",
+										"supported-languages"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"supportedLanguages\": [\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  },\n  {\n   \"language\": \"<string>\",\n   \"script\": \"<string>\"\n  }\n ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Runs transliteration on input",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "22b5b144-30a8-457e-9a6e-d43e03ed28fa",
+								"exec": [
+									"pm.test(\"Status code is 200 or 403 (not licensed)\", function () {",
+									"    pm.expect(responseCode.code === 200 || responseCode.code === 403 ).to.be.true;",
+									"});",
+									"pm.test(\"Validate transliteration response (if licensed)\", function() {",
+									"    if( responseCode.code === 200 ){",
+									"        var res = pm.response.json();",
+									"        pm.expect(res.transliteration).to.eql(\"أنا رايح الجامعة الساعة ٣ العصر\");        ",
+									"    }",
+									"});",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": "{{XRosetteAPIKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"ana r2ye7 el gam3a el sa3a 3 el 3asr\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/transliteration",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"transliteration"
+							]
+						},
+						"description": "Returns transliteration of input. <br><br>The response is a transliteration string."
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-RosetteAPI-Key",
+										"value": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": \"ana r2ye7 el gam3a el sa3a 3 el 3asr\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/transliteration",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"transliteration"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"transliteration\": \"<string>\"\n}"
+						}
+					]
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Rosette information",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4c6d8ac2-cf46-4cdf-9319-7b0ed7c557d2",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"pm.test(\"Validate Info response name\", function () {",
+							"    var res = pm.response.json();",
+							"    pm.expect(res.name).to.eql(\"Rosette\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-RosetteAPI-Key",
+						"value": "{{XRosetteAPIKey}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/info",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"info"
+					]
+				},
+				"description": "Returns general information about Rosette"
+			},
+			"response": [
+				{
+					"name": "OK",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/info",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"info"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"buildNumber\": \"<string>\",\n \"buildTyime\": \"<string>\",\n \"name\": \"<string>\",\n \"version\": \"<string>\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Ping Rosette",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3fc4778d-eabd-4f51-832e-d01631e60519",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"pm.test(\"Validate Ping message\", function() {",
+							"    var res = pm.response.json();",
+							"    pm.expect(res.message).to.eql(\"Rosette at your service\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-RosetteAPI-Key",
+						"value": "{{XRosetteAPIKey}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/ping",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"ping"
+					]
+				},
+				"description": "Pings Rosette for a response indicating the service is available."
+			},
+			"response": [
+				{
+					"name": "Ok",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-RosetteAPI-Key",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/ping",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ping"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"message\": \"<string>\",\n \"time\": \"<integer>\"\n}"
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "a0584777-f1ff-4068-bac1-2d98fa76d11d",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "da80e927-1942-4ebd-94ee-661263c6ba33",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "3a1348c3-547a-4cf2-8065-1319a4d7a64a",
+			"key": "baseUrl",
+			"value": "http://localhost:8181/rest/v1/",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
